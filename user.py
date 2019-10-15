@@ -1,11 +1,13 @@
-class User(object):
+import flask_login
 
-    def __init__(self, id, first_name, last_name):
-        self._id = id
-        self.first_name = first_name
-        self.last_name = last_name
-        self.login_key = int()
+class User(flask_login.UserMixin):
+
+    def __init__(self, is_authenticated=False, is_active=False, is_anonymous=True):
+        self.id = str()
         self.reviews = list()
+        
+    def get_id(self):
+        return self.id
     
     def add_review(self, drink_object):
         '''Needs to append a drink object along with string that states "like", "dislike", or "superlike"
