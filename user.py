@@ -1,20 +1,25 @@
 import flask_login
+from flask import Flask, request
 
 class User(flask_login.UserMixin):
 
-    def __init__(self, is_authenticated=False, is_active=False, is_anonymous=True):
-        self.id = str()
+    def __init__(self, id, password):
+        super().__init__()
+        self.id = id
+        self.password = password
         self.reviews = list()
-        
-    def get_id(self):
-        return self.id
     
-    def add_review(self, drink_object):
+    def add_review(self, id, preference):
         '''Needs to append a drink object along with string that states "like", "dislike", or "superlike"
         '''
-        pass
+        review = [id, preference]
+        self.reviews.append(review)
     
     def change_review(self, drink_id, new_value):
         '''Loop through review list and find the review string and change it
         '''
-        pass
+        for x in range(len(self.reviews)):
+            if self.reviews[x][0] == drink_id:
+                self.reviews[x][1] == new_value
+                break
+            return False

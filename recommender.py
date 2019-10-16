@@ -3,10 +3,10 @@ from pallete import Pallete
 
 class Recommender(object):
 
-    def __init__(self, user):
+    def __init__(self, user, drink_object_list):
         self.user = user
         self.ingredient_scores = list()
-
+    
     def get_recommendations(self):
         '''Method should return a list of n length of drinks in
         descending order of score

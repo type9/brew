@@ -3,16 +3,17 @@ import flask
 import flask_login
 
 from bson.objectid import ObjectId
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, Response, render_template, request, redirect, url_for, session, escape
 from pymongo import MongoClient
 from user import User
+from flask_wtf import FlaskForm
+from login import RegistrationForm, LoginForm
 
 host = os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/Brew')
 client = MongoClient(host=f'{host}?retryWrites=false')
 db = client.get_default_database()
-# users = db.users
+users = db.users
 flavors = db.flavors
-users = {'foo@bar.tld': {'password': 'secret'}}
 
 app = Flask(__name__)
 app.secret_key = 'secret string'
@@ -20,63 +21,60 @@ app.secret_key = 'secret string'
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
 
-@login_manager.user_loader
-def user_loader(email):
-    if email not in users:
-        return
-    user = User()
-    return user
+# # LOGIN ROUTES
+# @login_manager.user_loader
+# def user_loader(user_id):
+#     return User.get_id(user_id)
 
-@login_manager.request_loader
-def request_loader(request):
-    email = request.form.get('email')
-    if email not in users:
-        return
+# @login_manager.request_loader
+# def load_user(request):
+#     token = request.headers.get('Authorization')
+#     if token is None:
+#         token = request.args.get('token')
 
-    user = User()
-    user.id = email
+#     if token is not None:
+#         username,password = token.split(":") # naive token
+#         user_entry = User.get_id(username)
+#         if (user_entry is not None):
+#             user = User(user_entry[0],user_entry[1])
+#             if (user.password == password):
+#                 return user
+#     return None
 
-    user.is_authenticated = request.form['password'] == users[email]['password']
+# @app.route('/login', methods=['GET', 'POST'])
+# def login():
+#     form = LoginForm()
+#     if form.validate_on_submit():
+#         user = User(request.form.get('username'), request.form.get('password'))
+#         if user in users:
+#             flask_login.login_user(user)
 
-    return user
+#         flask.flash('Loggged in successfully.')
+
+#         next = request.args.get('next')
+#         return flask.redirect(next or url_for('index'))
+#     return render_template('login.html', form=form)
+
+# @app.route('/protected')
+# @flask_login.login_required
+# def protected():
+#     return 'Logged in as: ' + flask_login.current_user.id
+
+# @app.route('/logout')
+# def logout():
+#     session.pop('username', None)
+#     return redirect(url_for('index'))
+
+# @login_manager.unauthorized_handler
+# def unauthroized_handler():
+#     return 'Unauthorized'
+# # END LOGIN ROUTES
 
 @app.route('/')
-def landing():
-    pass
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if flask.request.method == 'GET':
-        return '''
-               <form action='login' method='POST'>
-                <input type='text' name='email' id='email' placeholder='email'/>
-                <input type='password' name='password' password='password' placeholder='password'/>
-                <input type='submit' name='submit'/>
-               </form>
-               '''
-    
-    email = flask.request.form['email']
-    if flask.request.form['password'] == users[email]['password']:
-        user = User()
-        user.id = email
-        flask_login.login_user(user)
-        return flask.redirect(flask.url_for('protected'))
-    return 'Bad login'
-
-@app.route('/protected')
-@flask_login.login_required
-def protected():
-    return 'Logged in as: ' + flask_login.current_user.id
-
-@app.route('/logout')
-def logout():
-    flask_login.logout_user()
-    return 'logged out'
-
-@login_manager.unauthorized_handler
-def unauthroized_handler():
-    return 'Unauthorized'
-
+def index():
+    if 'username' in session:
+        return (f'Logged in')
+    return render_template('login.html')
 
 if __name__ == '__main__':
   app.run(debug=True, host='0.0.0.0', port=os.environ.get('PORT', 5000))
