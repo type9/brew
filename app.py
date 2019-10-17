@@ -47,7 +47,7 @@ def register():
         'reviews': []
     }
     users.insert_one(current_user)
-    session['username'] = request.form['username']
+    session['username'] = request.form['username'] # login then redirects to index after registering
     return(url_for('index'))
     
   if 'username' in session: # if already logged in
@@ -72,6 +72,9 @@ def index():
       # recommend = Recommender(test_user)
       # drink_recommendations = recommend.get_recommendations(num_recommendations)
       current_user = users.find_one({'username': session['username']})
+
+      reviews = current_user['reviews']
+      recommender = Recommender(reviews)
       return render_template('home.html')
 
     return redirect(url_for('login'))
@@ -80,24 +83,50 @@ def index():
 def add_review():
   current_user = users.find_one({'username': session['username']})
 
-  db_action = ''
-  for review in current_user['reviews']:
+  db_action = '$push'
+  action_index = 0
+  for review in current_user['reviews']: # this code sees if a review on the drink already exists
     if review['drink_id'] == request.form['drink_id']:
       db_action = '$set'
-    else:
-      db_action = '$push'
       break
-  users.update_one(
-    { 'username': session['username'] },
-    {
-      db_action: {
-        'reviews': {
-          'drink_id': request.form['drink_id'], 'preference': request.form['preference']
+    action_index += 1
+  
+  if db_action == '$push':
+    users.update_one( # updates or pushes a review
+      { 'username': session['username'] },
+      {
+        db_action: {
+          'reviews': {
+            'drink_id': request.form['drink_id'], 
+            'preference': request.form['preference']
+          }
         }
       }
-    }
-  )
+    )
+  elif db_action == '$set':
+    print(str(action_index))
+    users.update_one( # updates or pushes a review
+      {'username': session['username']}, {
+        db_action: {'reviews.' + str(action_index) + '.preference': request.form['preference']}}
+    )
   return redirect(url_for('index'))
   
+@app.route('/reviews')
+def view_reviews():
+  current_user = users.find_one({'username': session['username']})
+
+  print(current_user['reviews'])
+  return render_template('review_index.html', review_list=current_user['reviews'])
+
+@app.route('/delete_review/<drink_id>', methods=['POST'])
+def delete_review(drink_id):
+  current_user = users.find_one({'username': session['username']})
+  users.update_one( # pulls review and removes it from reviews
+    { 'username': session['username'] },
+    { '$pull': { 'reviews': { 'drink_id': drink_id } } }
+  )
+  return redirect(url_for('view_reviews'))
+  
+
 if __name__ == '__main__':
   app.run(debug=True, host='0.0.0.0', port=os.environ.get('PORT', 5000))

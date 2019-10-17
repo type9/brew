@@ -7,10 +7,10 @@ max_ingredients = 15
 
 class Recommender(object):
 
-    def __init__(self, user):
-        self.user = user
+    def __init__(self, reviews):
+        self.reviews = reviews.items() # converts from dict to tuple
         self.ingredient_scores = list()
-    
+
     def get_recommendations(self, n):
         '''Method should return a list of n length of drinks ids in
         descending order of score
@@ -22,8 +22,8 @@ class Recommender(object):
         and additive score. Where a like is +1, dislike is -1, and a super like is +2.
         Format should look like [ingredient_name, score]
         '''
-        for i in len(range(self.user.reviews)):
-            r = requests.get(cocktaildb_drinkurl + self.user.reviews[i][0]) # gets the drink object
+        for i in len(range(self.reviews)):
+            r = requests.get(cocktaildb_drinkurl + self.reviews[i][0]) # gets the drink object
             drinks = r.loads(r.text)
             print(drinks)
 
@@ -32,10 +32,10 @@ class Recommender(object):
                 ingredient_in_list: False
                 for y in range(len(self.ingredient_scores)): # looks for the ingredient in the review list and increments by the review value if found
                     if self.ingredient_scores[y][0] == current_ingredient:
-                        self.ingredient_scores[y][1] += self.user.reviews[i][1]
+                        self.ingredient_scores[y][1] += self.reviews[i][1]
                         ingredient_in_list = True # marks that it found the ingredient
                 if not ingredient_in_list: # elseif the ingredient needs to be added
-                    self.ingredient_scores.append([current_ingredient, self.user.reviews[i][1]]) # gets appended with the review
+                    self.ingredient_scores.append([current_ingredient, self.reviews[i][1]]) # gets appended with the review
     
     def apply_pallete(self):
         '''Method should manipulate ingredient scoring based off predetermined

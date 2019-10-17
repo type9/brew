@@ -3,6 +3,7 @@
 {% endblock %}
 {% block content %}
     <div class="container">
+        <a href='/reviews'>See your already placed reviews</a>
         <div class="container" id="review_form_container">
             <form action='/' method='POST'>
                     <input type="text" name='drink_id' id='drink_id' placeholder="Cocktail ID from CocktailDB">
@@ -12,7 +13,6 @@
                     <input type="radio" name="preference" id='preference' value="-1"> Disliked<br>
                     <input class="btn btn-default" type="submit" value="Submit">
             </form>
-            
         </div>
     </div>
 {% endblock %}
