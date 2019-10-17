@@ -71,18 +71,28 @@ def index():
     if 'username' in session:
       # recommend = Recommender(test_user)
       # drink_recommendations = recommend.get_recommendations(num_recommendations)
+      current_user = users.find_one({'username': session['username']})
       return render_template('home.html')
 
     return redirect(url_for('login'))
   
 @app.route('/', methods=['POST'])
 def add_review():
+  current_user = users.find_one({'username': session['username']})
+
+  db_action = ''
+  for review in current_user['reviews']:
+    if review['drink_id'] == request.form['drink_id']:
+      db_action = '$set'
+    else:
+      db_action = '$push'
+      break
   users.update_one(
     { 'username': session['username'] },
     {
-      '$push': {
+      db_action: {
         'reviews': {
-          'drink_id': request.args.get('drink_id'), 'preference': request.args.get('preference')
+          'drink_id': request.form['drink_id'], 'preference': request.form['preference']
         }
       }
     }
