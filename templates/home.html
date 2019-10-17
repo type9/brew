@@ -1,0 +1,18 @@
+{% block head %}
+    <title>Brew - Home</title>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="container" id="review_form_container">
+            <form action='/' method='POST'>
+                    <input type="text" name='drink_id' placeholder="Cocktail ID from CocktailDB"><input>
+                    <h4>How did you like the drink?</h4>
+                    <input type="radio" name="preference" value="2"> Really liked<br>
+                    <input type="radio" name="preference" value="1"> Liked<br>
+                    <input type="radio" name="preference" value="-1"> Disliked<br>
+                    <input class="btn btn-default" type="submit" value="Submit">
+            </form>
+            
+        </div>
+    </div>
+{% endblock %}

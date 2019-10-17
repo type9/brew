@@ -1,14 +1,18 @@
 from user import User
+import requests
 from pallete import Pallete
+
+cocktaildb_drinkurl = 'https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i='
+max_ingredients = 15
 
 class Recommender(object):
 
-    def __init__(self, user, drink_object_list):
+    def __init__(self, user):
         self.user = user
         self.ingredient_scores = list()
     
-    def get_recommendations(self):
-        '''Method should return a list of n length of drinks in
+    def get_recommendations(self, n):
+        '''Method should return a list of n length of drinks ids in
         descending order of score
         '''
         pass
@@ -18,7 +22,20 @@ class Recommender(object):
         and additive score. Where a like is +1, dislike is -1, and a super like is +2.
         Format should look like [ingredient_name, score]
         '''
-        pass
+        for i in len(range(self.user.reviews)):
+            r = requests.get(cocktaildb_drinkurl + self.user.reviews[i][0]) # gets the drink object
+            drinks = r.loads(r.text)
+            print(drinks)
+
+            for x in range(max_ingredients): # checks all 15 possible ingredient strings in the object
+                current_ingredient = drinks[0]['strIngredient' + str(x)]
+                ingredient_in_list: False
+                for y in range(len(self.ingredient_scores)): # looks for the ingredient in the review list and increments by the review value if found
+                    if self.ingredient_scores[y][0] == current_ingredient:
+                        self.ingredient_scores[y][1] += self.user.reviews[i][1]
+                        ingredient_in_list = True # marks that it found the ingredient
+                if not ingredient_in_list: # elseif the ingredient needs to be added
+                    self.ingredient_scores.append([current_ingredient, self.user.reviews[i][1]]) # gets appended with the review
     
     def apply_pallete(self):
         '''Method should manipulate ingredient scoring based off predetermined

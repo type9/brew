@@ -1,18 +1,19 @@
-import flask_login
 from flask import Flask, request
 
-class User(flask_login.UserMixin):
+class Review():
+    def __init__(self, drink_id, preference):
+        self.drink_id = str(drink_id)
+        self.preference = int(preference)
 
-    def __init__(self, id, password):
-        super().__init__()
-        self.id = id
-        self.password = password
-        self.reviews = list()
+class User():
+    def __init__(self, username):
+        self.username = username
+        # self.reviews = list()
     
     def add_review(self, id, preference):
         '''Needs to append a drink object along with string that states "like", "dislike", or "superlike"
         '''
-        review = [id, preference]
+        review = Review(id, preference)
         self.reviews.append(review)
     
     def change_review(self, drink_id, new_value):

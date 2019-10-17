@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import Form, BooleanField, StringField, PasswordField, validators
+import json
 
 class RegistrationForm(Form):
     username = StringField('Username', [validators.Length(min=4, max=25)])
