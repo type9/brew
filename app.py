@@ -89,7 +89,7 @@ def add_review():
     if review['drink_id'] == request.form['drink_id']:
       db_action = '$set'
       break
-    action_index += 1
+    action_index += 1 # uses to find the index that needs to be changed if action is 'set'
   
   if db_action == '$push':
     users.update_one( # updates or pushes a review
@@ -120,7 +120,6 @@ def view_reviews():
 
 @app.route('/delete_review/<drink_id>', methods=['POST'])
 def delete_review(drink_id):
-  current_user = users.find_one({'username': session['username']})
   users.update_one( # pulls review and removes it from reviews
     { 'username': session['username'] },
     { '$pull': { 'reviews': { 'drink_id': drink_id } } }

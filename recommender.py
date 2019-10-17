@@ -1,5 +1,5 @@
-from user import User
 import requests
+import json
 from pallete import Pallete
 
 cocktaildb_drinkurl = 'https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i='
@@ -8,7 +8,7 @@ max_ingredients = 15
 class Recommender(object):
 
     def __init__(self, reviews):
-        self.reviews = reviews.items() # converts from dict to tuple
+        self.reviews = list(reviews.items()) # converts from dict to tuple
         self.ingredient_scores = list()
 
     def get_recommendations(self, n):
@@ -22,20 +22,21 @@ class Recommender(object):
         and additive score. Where a like is +1, dislike is -1, and a super like is +2.
         Format should look like [ingredient_name, score]
         '''
-        for i in len(range(self.reviews)):
+        for i in range(len(self.reviews)):
             r = requests.get(cocktaildb_drinkurl + self.reviews[i][0]) # gets the drink object
-            drinks = r.loads(r.text)
-            print(drinks)
+            drinks = json.loads(r.content)
 
             for x in range(max_ingredients): # checks all 15 possible ingredient strings in the object
-                current_ingredient = drinks[0]['strIngredient' + str(x)]
-                ingredient_in_list: False
+                current_ingredient = drinks['drinks'][0]['strIngredient' + str(x + 1)]
+                if current_ingredient == None:
+                    break
+                ingredient_in_list = False
                 for y in range(len(self.ingredient_scores)): # looks for the ingredient in the review list and increments by the review value if found
                     if self.ingredient_scores[y][0] == current_ingredient:
-                        self.ingredient_scores[y][1] += self.reviews[i][1]
+                        self.ingredient_scores[y][1] += int(self.reviews[i][1])
                         ingredient_in_list = True # marks that it found the ingredient
                 if not ingredient_in_list: # elseif the ingredient needs to be added
-                    self.ingredient_scores.append([current_ingredient, self.reviews[i][1]]) # gets appended with the review
+                    self.ingredient_scores.append([current_ingredient, int(self.reviews[i][1])]) # gets appended with the review
     
     def apply_pallete(self):
         '''Method should manipulate ingredient scoring based off predetermined
