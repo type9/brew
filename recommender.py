@@ -17,6 +17,7 @@ class Recommender(object):
         '''Method should return a list of n length of drinks ids in
         descending order of score
         '''
+        self.get_ingredients()
         for x in range(len(self.ingredient_scores)): # for ea. ingredient scored
             r = requests.get(cocktaildb_searchbyingredient + self.ingredient_scores[x][0]) # searching db by ingredient
             ingredient_drinks = json.loads(r.content)
@@ -27,6 +28,10 @@ class Recommender(object):
 
                 for recommended_drink in range(len(self.recommendations)): # for each drink in already recommended
                     if drink_id == self.recommendations[recommended_drink][0]: # checks if the ID already has been recommended
+                        already_recommended = True
+                        break
+                for reviewed_drink in range(len(self.reviews)): # checks if the drink is a drink reviewed already
+                    if drink_id == self.reviews[reviewed_drink][0]:
                         already_recommended = True
                         break
                 if already_recommended: # breaks if already has been scored and on the recommended list
@@ -43,12 +48,6 @@ class Recommender(object):
                 self.recommendations.append([drink_id, drink_score]) # appends th drink_id with the associated total score
         sorted_drinks = sorted(self.recommendations, key=lambda x: x[1], reverse=True) # sorts in descending order by score
         self.recommendations = sorted_drinks[:n] # only keeps the first n drinks
-
-
-                            
-                    
-                    
-                
 
     def get_ingredients(self):
         '''Method should return a 2D list of ingredients from the user's preferences

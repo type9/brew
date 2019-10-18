@@ -14,5 +14,14 @@
                     <input class="btn btn-default" type="submit" value="Submit">
             </form>
         </div>
+        <div class="container" id="drink_recommendation_container">
+            <ul>
+                {% for drink in drink_list %}
+                    <li>Drink Name: {{drink['strDrink']}}Drink ID: {{drink['idDrink']}}}}
+                        <img src='{{drink["strDrinkThumb"]}}' alt='Thumb for {{drink["strDrink"]}}'>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
     </div>
 {% endblock %}

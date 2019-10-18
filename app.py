@@ -3,6 +3,7 @@ import flask
 import flask_login
 import json
 
+import requests
 from bson.objectid import ObjectId
 from flask import Flask, Response, render_template, request, redirect, url_for, session, escape
 from pymongo import MongoClient
@@ -14,7 +15,8 @@ db = client.get_default_database()
 users = db.users
 flavors = db.flavors
 
-num_recommendations = 10
+num_recommendations = 15
+cocktaildb_drinkurl = 'https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i='
 # test_user = User('metal')
 # test_user.add_review('11000', 2)
 # test_user.add_review('11002', 1)
@@ -74,7 +76,14 @@ def index():
 
       reviews = current_user['reviews']
       recommender = Recommender(reviews)
-      return render_template('home.html')
+      recommender.get_recommendations(num_recommendations)
+      drink_list = list()
+      for i in range(len(recommender.recommendations)):
+        r = requests.get(cocktaildb_drinkurl + recommender.recommendations[i][0]) # gets drink object of each drink
+        drink = json.loads(r.content)
+        drink_list.append(drink[0])
+      print(recommender.recommendations)
+      return render_template('home.html', drink_list=drink_list)
 
     return redirect(url_for('login'))
   
