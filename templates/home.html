@@ -17,8 +17,9 @@
         <div class="container" id="drink_recommendation_container">
             <ul>
                 {% for drink in drink_list %}
-                    <li>Drink Name: {{drink['strDrink']}}Drink ID: {{drink['idDrink']}}}}
-                        <img src='{{drink["strDrinkThumb"]}}' alt='Thumb for {{drink["strDrink"]}}'>
+                    <li>
+                        Drink Name: {{drink['strDrink']}} | Drink ID: {{drink['idDrink']}} <br>
+                        <img style='width:300px' src='{{drink["strDrinkThumb"]}}' alt='Thumb for {{drink["strDrink"]}}'>
                     </li>
                 {% endfor %}
             </ul>

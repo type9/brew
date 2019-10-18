@@ -9,9 +9,16 @@ max_ingredients = 15
 class Recommender(object):
 
     def __init__(self, reviews):
-        self.reviews = list(reviews.items()) # converts from dict to tuple
+        self.reviews = self.convert_to_list(reviews) # converts from db dict format to iterable list format [drink_id][score]
         self.ingredient_scores = list() # FORMAT: [drink_id][score]
         self.recommendations = list() # FORMAT: [drink_id][total_score]
+
+    def convert_to_list(self, reviews):
+        list_reviews = list()
+        for x in range(len(reviews)):
+            this_review = [reviews[x]['drink_id'], reviews[x]['preference']]
+            list_reviews.append(this_review)
+        return list_reviews
 
     def get_recommendations(self, n):
         '''Method should return a list of n length of drinks ids in

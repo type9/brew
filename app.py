@@ -75,14 +75,16 @@ def index():
       current_user = users.find_one({'username': session['username']})
 
       reviews = current_user['reviews']
-      recommender = Recommender(reviews)
-      recommender.get_recommendations(num_recommendations)
+
       drink_list = list()
-      for i in range(len(recommender.recommendations)):
-        r = requests.get(cocktaildb_drinkurl + recommender.recommendations[i][0]) # gets drink object of each drink
-        drink = json.loads(r.content)
-        drink_list.append(drink[0])
-      print(recommender.recommendations)
+      if len(reviews) > 0:
+        recommender = Recommender(reviews)
+        recommender.get_recommendations(num_recommendations)
+        for i in range(len(recommender.recommendations)):
+          r = requests.get(cocktaildb_drinkurl + recommender.recommendations[i][0]) # gets drink object of each drink
+          drink = json.loads(r.content)
+          drink_list.append(drink['drinks'][0]) # adds the drink object to a list to pass to the template
+
       return render_template('home.html', drink_list=drink_list)
 
     return redirect(url_for('login'))
