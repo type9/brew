@@ -7,7 +7,6 @@ from bson.objectid import ObjectId
 from flask import Flask, Response, render_template, request, redirect, url_for, session, escape
 from pymongo import MongoClient
 from recommender import Recommender
-from login import RegistrationForm, LoginForm
 
 host = os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/Brew')
 client = MongoClient(host=f'{host}?retryWrites=false')
