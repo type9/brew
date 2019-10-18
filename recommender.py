@@ -12,6 +12,7 @@ class Recommender(object):
         self.reviews = self.convert_to_list(reviews) # converts from db dict format to iterable list format [drink_id][score]
         self.ingredient_scores = list() # FORMAT: [drink_id][score]
         self.recommendations = list() # FORMAT: [drink_id][total_score]
+        self.pallete = Pallete()
 
     def convert_to_list(self, reviews):
         list_reviews = list()
@@ -76,9 +77,11 @@ class Recommender(object):
                         ingredient_in_list = True # marks that it found the ingredient
                 if not ingredient_in_list: # elseif the ingredient needs to be added
                     self.ingredient_scores.append([current_ingredient, int(self.reviews[i][1])]) # gets appended with the review
+        self.apply_pallete()
     
     def apply_pallete(self):
         '''Method should manipulate ingredient scoring based off predetermined
         flavor groups. Utilize pallete class.
         '''
-        pass
+        new_scores = self.pallete.ignore_ingredients(self.ingredient_scores, self.pallete.ingredients_ignore)
+        self.ingredient_scores = new_scores

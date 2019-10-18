@@ -17,11 +17,6 @@ flavors = db.flavors
 
 num_recommendations = 15
 cocktaildb_drinkurl = 'https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i='
-# test_user = User('metal')
-# test_user.add_review('11000', 2)
-# test_user.add_review('11002', 1)
-# test_user.add_review('11009', 1)
-# test_user.add_review('11008', -1)
 
 app = Flask(__name__)
 app.secret_key = 'secret string'
