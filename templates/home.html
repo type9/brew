@@ -3,7 +3,10 @@
 {% endblock %}
 {% block content %}
     <div class="container">
+        <a href='/logout'>Logout</a>
+        <br>
         <a href='/reviews'>See your already placed reviews</a>
+        <br>
         <div class="container" id="review_form_container">
             <form action='/' method='POST'>
                     <input type="text" name='drink_id' id='drink_id' placeholder="Cocktail ID from CocktailDB">
@@ -14,15 +17,7 @@
                     <input class="btn btn-default" type="submit" value="Submit">
             </form>
         </div>
-        <div class="container" id="drink_recommendation_container">
-            <ul>
-                {% for drink in drink_list %}
-                    <li>
-                        Drink Name: {{drink['strDrink']}} | Drink ID: {{drink['idDrink']}} <br>
-                        <img style='width:300px' src='{{drink["strDrinkThumb"]}}' alt='Thumb for {{drink["strDrink"]}}'>
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
+        <br>
+        <a href='/recommendations'>See your recommendations</a>
     </div>
 {% endblock %}

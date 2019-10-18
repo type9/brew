@@ -44,7 +44,7 @@ def register():
     }
     users.insert_one(current_user)
     session['username'] = request.form['username'] # login then redirects to index after registering
-    return(url_for('index'))
+    return redirect(url_for('index'))
     
   if 'username' in session: # if already logged in
     return redirect(url_for('index'))
@@ -65,22 +65,7 @@ def logout():
 @app.route('/')
 def index():
     if 'username' in session:
-      # recommend = Recommender(test_user)
-      # drink_recommendations = recommend.get_recommendations(num_recommendations)
-      current_user = users.find_one({'username': session['username']})
-
-      reviews = current_user['reviews']
-
-      drink_list = list()
-      if len(reviews) > 0:
-        recommender = Recommender(reviews)
-        recommender.get_recommendations(num_recommendations)
-        for i in range(len(recommender.recommendations)):
-          r = requests.get(cocktaildb_drinkurl + recommender.recommendations[i][0]) # gets drink object of each drink
-          drink = json.loads(r.content)
-          drink_list.append(drink['drinks'][0]) # adds the drink object to a list to pass to the template
-
-      return render_template('home.html', drink_list=drink_list)
+      return render_template('home.html')
 
     return redirect(url_for('login'))
   
@@ -115,13 +100,35 @@ def add_review():
         db_action: {'reviews.' + str(action_index) + '.preference': request.form['preference']}}
     )
   return redirect(url_for('index'))
-  
+
+@app.route('/recommendations')
+def view_recommendations():
+  if 'username' in session:
+      # recommend = Recommender(test_user)
+      # drink_recommendations = recommend.get_recommendations(num_recommendations)
+      current_user = users.find_one({'username': session['username']})
+
+      reviews = current_user['reviews']
+
+      drink_list = list()
+      if len(reviews) > 0:
+        recommender = Recommender(reviews)
+        recommender.get_recommendations(num_recommendations)
+        for i in range(len(recommender.recommendations)):
+          r = requests.get(cocktaildb_drinkurl + recommender.recommendations[i][0]) # gets drink object of each drink
+          drink = json.loads(r.content)
+          drink_list.append(drink['drinks'][0]) # adds the drink object to a list to pass to the template
+
+      return render_template('recommendations_index.html', drink_list=drink_list)
+
+  return redirect(url_for('login'))
+
 @app.route('/reviews')
 def view_reviews():
-  current_user = users.find_one({'username': session['username']})
-
-  print(current_user['reviews'])
-  return render_template('review_index.html', review_list=current_user['reviews'])
+  if 'username' in session:
+    current_user = users.find_one({'username': session['username']})
+    return render_template('review_index.html', review_list=current_user['reviews'])
+  return redirect(url_for('login'))
 
 @app.route('/delete_review/<drink_id>', methods=['POST'])
 def delete_review(drink_id):
