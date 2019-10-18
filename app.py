@@ -32,6 +32,7 @@ def login():
       <form method="post">
           <p><input type=text name=username>
           <p><input type=submit value=Login>
+          <a href='/register'>Register new ID here</a>
       </form>
       '''
   
