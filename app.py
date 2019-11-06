@@ -28,13 +28,7 @@ def login():
         session['username'] = request.form['username']
         return redirect(url_for('index'))
     else: 
-      return '''
-      <form method="post">
-          <p><input type=text name=username>
-          <p><input type=submit value=Login>
-          <a href='/register'>Register new ID here</a>
-      </form>
-      '''
+      return render_template('login.html')
   
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -109,20 +103,27 @@ def view_recommendations():
       # drink_recommendations = recommend.get_recommendations(num_recommendations)
       current_user = users.find_one({'username': session['username']})
 
-      reviews = current_user['reviews']
-
-      drink_list = list()
-      if len(reviews) > 0:
-        recommender = Recommender(reviews)
-        recommender.get_recommendations(num_recommendations)
-        for i in range(len(recommender.recommendations)):
-          r = requests.get(cocktaildb_drinkurl + recommender.recommendations[i][0]) # gets drink object of each drink
-          drink = json.loads(r.content)
-          drink_list.append(drink['drinks'][0]) # adds the drink object to a list to pass to the template
-
-      return render_template('recommendations_index.html', drink_list=drink_list)
+      return render_template('recommendations_index.html')
 
   return redirect(url_for('login'))
+
+@app.route('/recommendations/get', methods=['POST'])
+def get_recommendations(username):
+  if 'username' in session:
+    current_user = users.find_one({'username': session['username']})
+
+    reviews = current_user['reviews']
+
+    drink_list = list()
+    if len(reviews) > 0:
+      recommender = Recommender(reviews)
+      recommender.get_recommendations(num_recommendations)
+      for i in range(len(recommender.recommendations)):
+        r = requests.get(cocktaildb_drinkurl + recommender.recommendations[i][0]) # gets drink object of each drink
+        drink = json.loads(r.content)
+        drink_list.append(drink['drinks'][0]) # adds the drink object to a list to pass to the template
+
+  return 'Error: not in session'
 
 @app.route('/reviews')
 def view_reviews():
@@ -139,6 +140,16 @@ def delete_review(drink_id):
   )
   return redirect(url_for('view_reviews'))
   
+
+
+
+
+@app.route('/score-drink')
+def index():
+    return redirect(url_for('login'))
+
+
+
 
 if __name__ == '__main__':
   app.run(debug=True, host='0.0.0.0', port=os.environ.get('PORT', 5000))

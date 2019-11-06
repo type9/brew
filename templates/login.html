@@ -1,18 +1,24 @@
+{% extends 'base.html' %}
 {% block head %}
-    <title>Brew - login</title>
+    <title>Brew - Login</title>
 {% endblock %}
 {% block content %}
-    <div class="container">
-      <br>
-      <form action="" method="post">
-        <input type="text" placeholder="Username" name="username" value="{{
-          request.form.username }}">
-         <input type="password" placeholder="Password" name="password" value="{{
-          request.form.password }}">
-        <input class="btn btn-default" type="submit" value="Login">
-      </form>
-      {% if error %}
-        <p class="error"><strong>Error:</strong> {{ error }}
-      {% endif %}
+    <div class='container'>
+  
+      <div class='mx-auto mt-5' style='width:400px;'>
+
+        <form method='post'>
+          <div class='form-group'>
+            <div class='row container-fluid'>
+              <label for='username'>Username</label>
+              <input class='form-control form-control-large' type='text' name='username' id='username'>
+              <small id='usernameContext' class='form-text text-muted'>This website is for test purposes and is not secure. Please do not input secure credentials or bad data.</small>
+            </div>
+          </div>
+            <button class='btn btn-primary' type='button submit2'>Login</button>
+        </form>
+
+      </div>
+    
     </div>
 {% endblock %}

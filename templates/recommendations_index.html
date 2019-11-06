@@ -1,5 +1,7 @@
 {% block head %}
     <title>Brew - Your Recommendations</title>
+    <script type=text/javascript 
+         src="{{ url_for('static', filename = 'javascripts/get_recommendations.js') }}" ></script>
 {% endblock %}
 {% block content %}
     <div class="container"></div>
@@ -7,12 +9,6 @@
         <div class="container">
             <div class="container" id="drink_recommendation_container">
                 <ul>
-                    {% for drink in drink_list %}
-                        <li>
-                            Drink Name: {{drink['strDrink']}} | Drink ID: {{drink['idDrink']}} <br>
-                            <img style='width:300px' src='{{drink["strDrinkThumb"]}}' alt='Thumb for {{drink["strDrink"]}}'>
-                        </li>
-                    {% endfor %}
                 </ul>
             </div>
         </div>

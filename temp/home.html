@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+    
+    <head> 
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+        <!-- jQuery library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+
+        <!-- Popper JS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+
+        <!-- Latest compiled JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+		<meta charset="utf-8"> 
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://fonts.googleapis.com/css?family=Barlow+Semi+Condensed" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+
+        <!-- Navbar CSS Sheet -->
+	    <link rel="stylesheet" type="text/css" 
+            href="{{ url_for('static', filename = 'stylesheets/navbar.css') }}" >
+        
+        <title>Brew - Home</title>
+	</head>
+
+    <body>
+        <nav class='navbar navbar-light bg-light'>
+            <a class='navbar-brand' href='/'>Brew</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Your Ratings</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Preferences</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                </li>
+                </ul>
+            </div>
+        </nav>
+    
+        <div class="container">
+            <a href='/logout'>Logout</a>
+            <br>
+            <a href='/reviews'>See your already placed reviews</a>
+            <br>
+            <div class="container" id="review_form_container">
+                <form action='/' method='POST'>
+                        <input type="text" name='drink_id' id='drink_id' placeholder="Cocktail ID from CocktailDB">
+                        <h4>How did you like the drink?</h4>
+                        <input type="radio" name="preference" id='preference' value="2"> Really liked<br>
+                        <input type="radio" name="preference" id='preference' value="1"> Liked<br>
+                        <input type="radio" name="preference" id='preference' value="-1"> Disliked<br>
+                        <input class="btn btn-default" type="submit" value="Submit">
+                </form>
+            </div>
+            <br>
+            <a href='/recommendations'>See your recommendations</a>
+        </div>
+
+    </body>
+</html>

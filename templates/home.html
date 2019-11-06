@@ -1,13 +1,40 @@
+{% extends 'base.html' %}
 {% block head %}
     <title>Brew - Home</title>
+    <script type=text/javascript 
+         src="{{ url_for('static', filename = 'javascripts/home.js') }}" ></script>
 {% endblock %}
 {% block content %}
+    {% include 'partials/navbar.html' %}
     <div class="container">
-        <a href='/logout'>Logout</a>
-        <br>
-        <a href='/reviews'>See your already placed reviews</a>
-        <br>
-        <div class="container" id="review_form_container">
+        <div class='row p-4'>
+            <div class='col-md-5'>
+                <div class='form-group'>
+                    <div class='row container-fluid'>
+                        <label for='cocktail-search'><h4>Cocktail Search</h4></label>
+                        <input class='form-control form-control-large' type='text' name='cocktail-search' id='cocktail-search'>
+                        <small id='cocktailSearchContext' class='form-text text-muted'>This app is powered by <a href=https://thecocktaildb.com>TheCocktailDB</a></small>
+                    </div>
+                </div>
+                <div id='focused-cocktail' class='row container-fluid'>
+                    <div class='card' style='width:auto; margin:auto;'>
+                        <img id='focused-cocktail-img' src='' class='card-img-top' alt=''>
+                        <div class='card-body'>
+                            <h5 id='focused-cocktail-name' class='card-title'>Cocktail Name</h5>
+                            <p id='focused-cocktail-details' class='card-text'>placeholder</p>
+                            <div class='btn-group' role='group'>
+                                <input id="button" type='button' class='btn btn-warning' value='Really like'>
+                                <input type='button' class='btn btn-success' value='Like'>
+                                <input type='button' class='btn btn-danger' value='Dislike'>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class='col-md-7'></div>
+        </div>
+
+        <!-- <div class="container" id="review_form_container">
             <form action='/' method='POST'>
                     <input type="text" name='drink_id' id='drink_id' placeholder="Cocktail ID from CocktailDB">
                     <h4>How did you like the drink?</h4>
@@ -16,8 +43,8 @@
                     <input type="radio" name="preference" id='preference' value="-1"> Disliked<br>
                     <input class="btn btn-default" type="submit" value="Submit">
             </form>
-        </div>
-        <br>
-        <a href='/recommendations'>See your recommendations</a>
+        </div> -->
+
+        <a href='/recommendations'>Recommendations</a>
     </div>
 {% endblock %}
