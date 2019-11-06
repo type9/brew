@@ -33,14 +33,22 @@ $(document).ready(function(){
         delay: 100,
         classes: {
             'ui-autocomplete': 'cocktail-autocomplete',
+        },
+        select: function(event, ui){
+            set_focused_cocktail(ui.item.label);
         }
     });
 
     
     // Search submission detection
     MAX_DETAIL_CHARS = 100;
-    function set_focused_cocktail(){ // function to run when search submitted
-        searched_cocktail = $(cocktail_search_id).val();
+    function set_focused_cocktail(cocktail){ // default takes search bar value, if a value is passed the search bar value is overridden
+        if (cocktail != null){ // if a value is passed through it overrides the search bar value
+            searched_cocktail = cocktail;
+        } else {
+            searched_cocktail = $(cocktail_search_id).val();
+        };
+        
         if(searched_cocktail.length > 0) { // checks for empty search
             $.get(QUERY_BY_NAME + searched_cocktail, function(data){ // API call to database with searched cocktail
                 this_drink = data['drinks'][0] //pulls first drink from the results
@@ -49,13 +57,15 @@ $(document).ready(function(){
                     $(cocktail_details_elem).text(this_drink['strInstructions'])
                     $(cocktail_img_elem).attr('src', this_drink['strDrinkThumb'])
 
+                    $(cocktail_name_elem).parent().attr('name', this_drink['idDrink'])
+
                     this_text = $(cocktail_details_elem).text();
                     if (this_text.length > MAX_DETAIL_CHARS){
                         $(cocktail_details_elem).text(this_text.substring(0, MAX_DETAIL_CHARS) + '...');
                     }
                     $(focused_cocktail_elem).fadeIn('50')
                 } else {
-                    $(focused_cocktail_elem).fadeOut('50')
+                    $(focused_cocktail_elem).fadeOut('25')
                 };
             });
         };
@@ -65,26 +75,23 @@ $(document).ready(function(){
     //setup before functions
     var typingTimer;//timer identifier
     var doneTypingInterval = 2000;//time in ms
-
     //on keyup, start the countdown
     $('body').on('keyup', function () {
         typingTimer = setTimeout(set_focused_cocktail(), doneTypingInterval);
         clearTimeout(typingTimer);
     });
-
     //on keydown, clear the countdown 
     $('body').on('keydown', function () {
         if ($(cocktail_search_id).is(':focus')){
             clearTimeout(typingTimer);
         };
     });
+    $('.cocktail-autocomplete').on('click', function(){
+        set_focused_cocktail
+    });
 
-    
-    $.post('path', { id:'', value: 23 }, function(data) {
+    //rating button press function
+    // $.post('/', { id:'', value: 23 }, function(data) {
 
-    })
+    // })
 });
-
-// fetch('the/path/to/route?drink=Mai Tai', options).then(res => res.json()).then(json => {
-
-// })

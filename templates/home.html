@@ -23,7 +23,7 @@
                             <h5 id='focused-cocktail-name' class='card-title'>Cocktail Name</h5>
                             <p id='focused-cocktail-details' class='card-text'>placeholder</p>
                             <div class='btn-group' role='group'>
-                                <input id="button" type='button' class='btn btn-warning' value='Really like'>
+                                <input type='button' class='btn btn-warning' value='Really like'>
                                 <input type='button' class='btn btn-success' value='Like'>
                                 <input type='button' class='btn btn-danger' value='Dislike'>
                             </div>
@@ -31,7 +31,10 @@
                     </div>
                 </div>
             </div>
-            <div class='col-md-7'></div>
+            <div class='col-md-7'>
+                <h4>Your Recommendations</h4>
+                <div id='recommendations-container' class='row container-fluid'></div>
+            </div>
         </div>
 
         <!-- <div class="container" id="review_form_container">
@@ -44,7 +47,5 @@
                     <input class="btn btn-default" type="submit" value="Submit">
             </form>
         </div> -->
-
-        <a href='/recommendations'>Recommendations</a>
     </div>
 {% endblock %}
