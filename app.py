@@ -68,10 +68,13 @@ def index():
 def add_review():
   current_user = users.find_one({'username': session['username']})
 
+  drink_id = request.form['drink_id']
+  preference = request.form['preference']
+
   db_action = '$push'
   action_index = 0
   for review in current_user['reviews']: # this code sees if a review on the drink already exists
-    if review['drink_id'] == request.form['drink_id']:
+    if review['drink_id'] == drink_id:
       db_action = '$set'
       break
     action_index += 1 # uses to find the index that needs to be changed if action is 'set'
@@ -82,8 +85,8 @@ def add_review():
       {
         db_action: {
           'reviews': {
-            'drink_id': request.form['drink_id'], 
-            'preference': request.form['preference']
+            'drink_id': drink_id, 
+            'preference': preference
           }
         }
       }
@@ -92,9 +95,9 @@ def add_review():
     print(str(action_index))
     users.update_one( # updates or pushes a review
       {'username': session['username']}, {
-        db_action: {'reviews.' + str(action_index) + '.preference': request.form['preference']}}
+        db_action: {'reviews.' + str(action_index) + '.preference': preference}}
     )
-  return redirect(url_for('index'))
+  return 'success'
 
 @app.route('/recommendations')
 def view_recommendations():
@@ -108,28 +111,35 @@ def view_recommendations():
   return redirect(url_for('login'))
 
 @app.route('/recommendations/get', methods=['POST'])
-def get_recommendations(username):
+def get_recommendations():
   if 'username' in session:
     current_user = users.find_one({'username': session['username']})
 
     reviews = current_user['reviews']
 
-    drink_list = list()
+    drinks_list = list()
     if len(reviews) > 0:
       recommender = Recommender(reviews)
       recommender.get_recommendations(num_recommendations)
       for i in range(len(recommender.recommendations)):
         r = requests.get(cocktaildb_drinkurl + recommender.recommendations[i][0]) # gets drink object of each drink
         drink = json.loads(r.content)
-        drink_list.append(drink['drinks'][0]) # adds the drink object to a list to pass to the template
-
-  return 'Error: not in session'
+        drinks_list.append(drink['drinks'][0]) # adds the drink object to a list to pass to the template
+      return  json.dumps(drinks_list)
+  return False
 
 @app.route('/reviews')
 def view_reviews():
   if 'username' in session:
+    return render_template('review_index.html')
+  return redirect(url_for('login'))
+
+@app.route('/reviews/get', methods=['GET'])
+def get_reviews():
+  if 'username' in session:
     current_user = users.find_one({'username': session['username']})
-    return render_template('review_index.html', review_list=current_user['reviews'])
+    reviews = current_user['reviews']
+    return json.dumps(reviews)
   return redirect(url_for('login'))
 
 @app.route('/delete_review/<drink_id>', methods=['POST'])

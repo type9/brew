@@ -1,6 +1,35 @@
 $(document).ready(function(){
     QUERY_BY_NAME = 'https://www.thecocktaildb.com/api/json/v1/1/search.php?s=';
 
+    recommendations_id = '#recommendations-container';
+    NUM_RECOMMENDATIONS = 15;
+    //insertion of drink data into recommendations section
+    $.post('/recommendations/get',function(data) {
+        drink_list = JSON.parse(data)
+        for(x = 0; x < NUM_RECOMMENDATIONS; x++){
+            this_drink = drink_list[x]
+            if(this_drink != undefined){
+                drink_id = this_drink['idDrink']
+                drink_name = this_drink['strDrink']
+                drink_img = this_drink['strDrinkThumb']
+                var drink_card = `
+                    <div id='drinkid-${drink_id}'class='card mb-4' style='width:200px; margin:auto;'>
+                        <img src='${drink_img}' class='card-img-top' alt='${drink_name}'>
+                        <div class='card-body'>
+                            <h5 class='card-title'>${drink_name}</h5>
+                            <p class='card-text'></p>
+                        </div>
+                    </div>
+                `;
+                $(recommendations_id).append(drink_card)
+            } else {
+                break;
+            }
+            //drink card layout for recommendations
+            
+        }
+    });
+
     //ELEM IDs
     cocktail_search_id = '#cocktail-search';
     focused_cocktail_elem = '#focused-cocktail'
@@ -87,11 +116,30 @@ $(document).ready(function(){
         };
     });
     $('.cocktail-autocomplete').on('click', function(){
-        set_focused_cocktail
+        set_focused_cocktail();
     });
 
     //rating button press function
-    // $.post('/', { id:'', value: 23 }, function(data) {
-
-    // })
+    $('.focus-cocktail-rating').on('click', function(){
+        drink_id = $(this).parent().parent().attr('name');
+        drink_rating = 0;
+        button_value = $(this).attr('value');
+        if(button_value == 'Really Like'){
+            drink_rating = '2';
+        } else if(button_value == 'Like'){
+            drink_rating = '1';
+        } else if(button_value == 'Dislike'){
+            drink_rating = '-1';
+        }
+        console.log(drink_id)
+        console.log(drink_rating)
+        $.post('/', {'drink_id': drink_id, 'preference': drink_rating}, function(data) {
+            if(data == 'success'){
+                alert('Your review went through');
+            } else{
+                alert('[Error]Review not submitted');
+            }
+        })
+    });
+    
 });

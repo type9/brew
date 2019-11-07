@@ -1,22 +1,15 @@
+{% extends 'base.html' %}
 {% block head %}
     <title>Brew - Your Reviews</title>
+    <script type='text/javascript'
+         src="{{ url_for('static', filename = 'javascripts/review_index.js') }}" ></script>
+    <link rel='stylesheet'
+         href="{{ url_for('static', filename = 'stylesheets/review_index.css') }}" >
 {% endblock %}
 {% block content %}
-    <div class="container"></div>
-        <a href='/'>Back to Home</a>
-        <br>
-        <div class="container">
-            <div class="container" id="review_list_container">
-                    <ul id="review list">
-                        {% for review in review_list %}
-                            <li>Drink ID: {{review['drink_id']}} | Your Rating: {{review['preference']}}
-                                <form action='/delete_review/{{review["drink_id"]}}' method='POST'>
-                                    <input class='button' type='submit' value='Delete Review'>
-                                </form>
-                            </li>
-                        {% endfor %}
-                    </ul>
-            </div>
+    {% include 'partials/navbar.html' %}
+    <div class="container">
+        <div class='row container-fluid' id='review-list-container'>
         </div>
     </div>
 {% endblock %}
