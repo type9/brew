@@ -124,7 +124,8 @@ $(document).ready(function(){
         drink_id = $(this).parent().parent().attr('name');
         drink_rating = 0;
         button_value = $(this).attr('value');
-        if(button_value == 'Really Like'){
+        console.log($(this).attr('value'));
+        if(button_value == 'Really like'){
             drink_rating = '2';
         } else if(button_value == 'Like'){
             drink_rating = '1';
@@ -132,7 +133,7 @@ $(document).ready(function(){
             drink_rating = '-1';
         }
         console.log(drink_id)
-        console.log(drink_rating)
+        console.log(drink_rating) // TODO: check logs, drink_rating is not setting properly causing DB errors
         $.post('/', {'drink_id': drink_id, 'preference': drink_rating}, function(data) {
             if(data == 'success'){
                 alert('Your review went through');
