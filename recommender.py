@@ -84,4 +84,5 @@ class Recommender(object):
         flavor groups. Utilize pallete class.
         '''
         new_scores = self.pallete.ignore_ingredients(self.ingredient_scores, self.pallete.ingredients_ignore)
+        new_scores = self.pallete.truncate_ingredients(new_scores)
         self.ingredient_scores = new_scores

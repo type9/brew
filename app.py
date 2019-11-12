@@ -15,7 +15,7 @@ db = client.get_default_database()
 users = db.users
 flavors = db.flavors
 
-num_recommendations = 15
+num_recommendations = 6
 cocktaildb_drinkurl = 'https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i='
 
 app = Flask(__name__)
