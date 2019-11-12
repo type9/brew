@@ -29,7 +29,7 @@ class Recommender(object):
         for x in range(len(self.ingredient_scores)): # for ea. ingredient scored
             r = requests.get(cocktaildb_searchbyingredient + self.ingredient_scores[x][0]) # searching db by ingredient
             if r == None: # checks for an ingredient search pulling up no data
-                break
+                continue
             ingredient_drinks = json.loads(r.content)
 
             for y in range(len(ingredient_drinks['drinks'])): # for ea. drink in the by-ingredient search
