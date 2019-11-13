@@ -3,7 +3,8 @@ class Pallete(object):
         self.max_ingredients = 10
         self.ingredients_ignore = [
             'Water',
-            'Sugar'
+            'Sugar',
+            ''
         ]
     def truncate_ingredients(self, ingredient_list):
         return ingredient_list[:self.max_ingredients]
